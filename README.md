@@ -2,6 +2,7 @@
 스포츠 동호회 커뮤니티
 
 ## project
+
     JAVA 17
     Spring Boot 3.2.2
 
@@ -9,13 +10,21 @@
 
     user
         - id
-        - account_id
+        - email
         - name
         - nickname
-        - password
         - age
+        - social ( kakao, naver, google )
         - role ( ROLE_ADMIN/ROLE_USER )
         - reg_date
+
+    userProfile
+        - id
+        - user_id (FK)
+        - profile_img / optional
+        - profile_img_dir / optional
+        - introduce / optional : 자기 소개
+        - interests / optional : 관심 종목 => ex) category에 있는 name들 탁구, 배드민턴 등
 
     category
         - id
@@ -43,13 +52,21 @@
         - user_id (FK)
         - reg_date
 
-    room ( user:1 = room: N, category: 1 = room: N )
+    room ( user: 1 = room: N, category: 1 = room: N )
         - id
         - title
         - description / optional
+        - area
         - user_id (FK)
         - category_id (FK)
         - reg_date
+    
+    roomJoin ( room: 1 = rommJoin: N)
+        - id
+        - title
+        - user_id
+        - description / optional => ex) 배드민턴 1년 했습니다.., 탁구 신입입니다..
+        - confirmYn
         
     roomUsers ( room: 1 = roomUsers: N, user: 1 = roomUsers: N )
         - id / 빼도 될듯
@@ -70,17 +87,14 @@
 ## 기능 정리
 
     1. 회원
-        1-1. 회원가입, 로그인
+        1-1. 소셜연동 회원가입, 로그인
+        - OAuth2 : 구글/카카오/네이버
         - spring scurity 및 JWT 활용 ( JJWT 라이브러리 등 )
-        - 회원 가입시 이메일 인증 등 필요 ( 휴대폰 인증은 유료.. )
         - ROLE 생성 -> ADMIN, USER 정도
-
-        1-2. 간편로그인( OAuth2 : 구글/카카오/네이버 ) optional
-        - 1-1를 제외하고 간편로그인만 해도 괜찮을 듯 함 -> 그러면 비밀번호 관리를 할 필요가 없음
 
     2. 마이페이지
         2-1. 회원정보수정
-        - 닉네임, 비밀번호, 소셜연동 등
+        - 닉네임 수정, 프로필사진, 자기소개, 관심종목, 소셜연동 등
     
     3. 공지사항
         3-1. 공지사항 글 작성, 수정, 삭제
@@ -102,8 +116,19 @@
         5-1. 조회, 생성, 수정, 삭제
         - 동호회 모집을 위한 방
         
-        5-2. 실시간 채팅
+        5-2. 가입 신청
+        - 동호회 장에게 신청 넣음
+        - 폼 내용 거주지, 경력 등
+
+        5-3. 실시간 채팅
         - 웹소켓 라이브러리 사용
+    
+        5-4. 동호회 기능(수요조사)
+        - 동호회 장 역할 부여
+        - 번개 모집, 투표, 정산 등
+
+        5-5. 동호회 장의 공지사항
+        
 
 ## 디렉토리 구조
 ```cmd
@@ -127,7 +152,7 @@
         - 형용사를 사용
         - EX) Runnable, Remote
         
-        1-4. 메세드
+        1-4. 메서드
         - kamelCase 사용
         - 동사로 시작
         
@@ -143,6 +168,10 @@
         - 데이터 유무 확인: has
         - B를 기준으로 A를 하겠다: By
         - EX) public void getUserByName()
+        
+        1-6. 변수와 상수
+        - 변수: kamelCase
+        - 상수: 전부 대문자로 표기, 스네이크 케이스 사용
 
 
     2. TDD 작성 서비스 / 컨트롤러
